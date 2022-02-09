@@ -1,7 +1,8 @@
 import gleam/sendgrid
 import gleam/hackney
 
-pub fn main_test() {
+// pub fn main_test() {
+pub fn main() {
   let api_key = "nope"
 
   // Construct an email
