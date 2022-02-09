@@ -15,7 +15,7 @@ gleam add gleam_sendgrid
 
 And then send some emails!
 
-```gleam
+```rust
 import gleam/sendgrid
 import gleam/hackney
 
