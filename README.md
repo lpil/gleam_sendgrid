@@ -24,10 +24,13 @@ pub fn main() {
 
   // Construct an email
   let email = 
-    sendgrid.new_email(from: "mike@example.com")
-    |> sendgrid.to("joe@example.com")
-    |> sendgrid.subject("Hello, Joe")
-    |> sendgrid.text_body("System still working?\n")
+    sendgrid.Email(
+      to: ["joe@example.com"],
+      sender_email: "mike@example.com",
+      sender_name: "Mike",
+      subject: "Hello, Joe!",
+      content: sendgrid.TextContent("System still working?"),
+    )
 
   // Prepare an API request
   let request = sendgrid.dispatch_request(email, api_key)
