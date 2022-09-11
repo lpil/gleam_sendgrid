@@ -2,8 +2,6 @@ import gleam/http/request.{Request}
 import gleam/http
 import gleam/string
 import gleam/json
-import gleam/list
-import gleam/io
 
 pub type Email {
   Email(

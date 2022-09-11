@@ -1,6 +1,4 @@
 import gleam/sendgrid
-import gleam/hackney
-import gleam/option
 import gleam/http
 import gleam/http/request
 import gleeunit/should
