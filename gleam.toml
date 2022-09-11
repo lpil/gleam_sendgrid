@@ -1,5 +1,5 @@
 name = "gleam_sendgrid"
-version = "0.1.0"
+version = "0.1.1"
 licences = ["Apache-2.0"]
 description = "Send emails from Gleam with SendGrid"
 repository = { type = "github", user = "lpil", repo = "gleam_sendgrid" }
