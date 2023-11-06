@@ -1,4 +1,4 @@
-import gleam/http/request.{Request}
+import gleam/http/request.{type Request}
 import gleam/http
 import gleam/string
 import gleam/json

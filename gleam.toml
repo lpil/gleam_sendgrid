@@ -1,5 +1,5 @@
 name = "gleam_sendgrid"
-version = "0.1.1"
+version = "0.2.0"
 licences = ["Apache-2.0"]
 description = "Send emails from Gleam with SendGrid"
 repository = { type = "github", user = "lpil", repo = "gleam_sendgrid" }
@@ -7,6 +7,7 @@ links = [
   { title = "Website", href = "https://gleam.run" },
   { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
 ]
+gleam = ">= 0.32.0"
 
 [dependencies]
 gleam_stdlib = "~> 0.19"
@@ -14,5 +15,5 @@ gleam_http = "~> 3.0"
 gleam_json = "~> 0.4"
 
 [dev-dependencies]
-gleeunit = "~> 0.6"
-gleam_hackney = "~> 0.2"
+gleeunit = "~> 1.0"
+gleam_hackney = "~> 1.0"

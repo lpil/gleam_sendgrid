@@ -15,7 +15,7 @@ gleam add gleam_sendgrid
 
 And then send some emails!
 
-```rust
+```gleam
 import gleam/sendgrid
 import gleam/hackney
 
@@ -36,9 +36,9 @@ pub fn main() {
   let request = sendgrid.dispatch_request(email, api_key)
 
   // Send it with a HTTP client of your choice
-  assert Ok(response) = hackney.send(request)
+  let assert Ok(response) = hackney.send(request)
 
   // A status of 202 indicates that the email has been sent
-  assert 202 = response.status
+  let assert 202 = response.status
 }
 ```
