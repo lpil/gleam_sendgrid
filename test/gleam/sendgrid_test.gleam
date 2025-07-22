@@ -1,7 +1,6 @@
-import gleam/sendgrid
 import gleam/http
 import gleam/http/request
-import gleeunit/should
+import gleam/sendgrid
 
 pub fn dispatch_request_text_content_test() {
   let request =
@@ -14,27 +13,15 @@ pub fn dispatch_request_text_content_test() {
     )
     |> sendgrid.dispatch_request("some-api-key")
 
-  request.host
-  |> should.equal("api.sendgrid.com")
-
-  request.path
-  |> should.equal("/v3/mail/send")
-
-  request.method
-  |> should.equal(http.Post)
-
-  request
-  |> request.get_header("content-type")
-  |> should.equal(Ok("application/json"))
-
-  request
-  |> request.get_header("authorization")
-  |> should.equal(Ok("Bearer some-api-key"))
-
-  request.body
-  |> should.equal(
-    "{\"personalizations\":[{\"to\":[{\"email\":\"joe@example.com\"}]}],\"from\":{\"email\":\"mike@example.com\",\"name\":\"Mike\"},\"subject\":\"Hello, Joe!\",\"content\":[{\"type\":\"text/plain\",\"value\":\"System still working?\"}]}",
-  )
+  assert http.Post == request.method
+  assert http.Https == request.scheme
+  assert "api.sendgrid.com" == request.host
+  assert "/v3/mail/send" == request.path
+  assert Ok("application/json") == request.get_header(request, "content-type")
+  assert Ok("Bearer some-api-key")
+    == request.get_header(request, "authorization")
+  assert "{\"personalizations\":[{\"to\":[{\"email\":\"joe@example.com\"}]}],\"from\":{\"email\":\"mike@example.com\",\"name\":\"Mike\"},\"subject\":\"Hello, Joe!\",\"content\":[{\"type\":\"text/plain\",\"value\":\"System still working?\"}]}"
+    == request.body
 }
 
 pub fn dispatch_request_rich_content_test() {
@@ -51,25 +38,13 @@ pub fn dispatch_request_rich_content_test() {
     )
     |> sendgrid.dispatch_request("some-api-key")
 
-  request.host
-  |> should.equal("api.sendgrid.com")
-
-  request.path
-  |> should.equal("/v3/mail/send")
-
-  request.method
-  |> should.equal(http.Post)
-
-  request
-  |> request.get_header("content-type")
-  |> should.equal(Ok("application/json"))
-
-  request
-  |> request.get_header("authorization")
-  |> should.equal(Ok("Bearer some-api-key"))
-
-  request.body
-  |> should.equal(
-    "{\"personalizations\":[{\"to\":[{\"email\":\"joe@example.com\"}]}],\"from\":{\"email\":\"mike@example.com\",\"name\":\"Mike\"},\"subject\":\"Hello, Joe!\",\"content\":[{\"type\":\"text/plain\",\"value\":\"System still working?\"},{\"type\":\"text/html\",\"value\":\"<p>System still working?</p>\"}]}",
-  )
+  assert http.Post == request.method
+  assert http.Https == request.scheme
+  assert "api.sendgrid.com" == request.host
+  assert "/v3/mail/send" == request.path
+  assert Ok("application/json") == request.get_header(request, "content-type")
+  assert Ok("Bearer some-api-key")
+    == request.get_header(request, "authorization")
+  assert "{\"personalizations\":[{\"to\":[{\"email\":\"joe@example.com\"}]}],\"from\":{\"email\":\"mike@example.com\",\"name\":\"Mike\"},\"subject\":\"Hello, Joe!\",\"content\":[{\"type\":\"text/plain\",\"value\":\"System still working?\"},{\"type\":\"text/html\",\"value\":\"<p>System still working?</p>\"}]}"
+    == request.body
 }

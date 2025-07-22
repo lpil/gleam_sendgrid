@@ -1,7 +1,6 @@
-import gleam/sendgrid
 import gleam/hackney
+import gleam/sendgrid
 
-// pub fn main_test() {
 pub fn main() {
   let api_key = "nope"
 
