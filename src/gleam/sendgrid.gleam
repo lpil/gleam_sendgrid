@@ -1,6 +1,5 @@
-import gleam/http/request.{type Request}
 import gleam/http
-import gleam/string
+import gleam/http/request.{type Request}
 import gleam/json
 
 pub type Email {
@@ -26,12 +25,17 @@ pub type EmailContent {
 //   --header 'Content-Type: application/json' \
 //   --data '{"personalizations": [{"to": [{"email": "test@example.com"}]}],"from": {"email": "test@example.com"},"subject": "Sending with SendGrid is Fun","content": [{"type": "text/plain", "value": "and easy to do anywhere, even with cURL"}]}'
 pub fn dispatch_request(email: Email, api_key: String) -> Request(String) {
-  let receipients = fn(emails) {
-    json.array(
-      emails,
-      fn(email) { json.object([#("email", json.string(email))]) },
-    )
-  }
+  let Email(to:, sender_name:, sender_email:, subject:, content:) = email
+
+  let make_email = fn(email) { json.object([#("email", json.string(email))]) }
+  let recipients = json.object([#("to", json.array(to, make_email))])
+  let personalizations = json.preprocessed_array([recipients])
+
+  let from =
+    json.object([
+      #("email", json.string(sender_email)),
+      #("name", json.string(sender_name)),
+    ])
 
   let make_content = fn(content, content_type) {
     json.object([
@@ -40,10 +44,10 @@ pub fn dispatch_request(email: Email, api_key: String) -> Request(String) {
     ])
   }
 
-  let content = case email.content {
-    TextContent(text: text) ->
+  let content = case content {
+    TextContent(text:) ->
       json.preprocessed_array([make_content(text, "text/plain")])
-    RichContent(html: html, text: text) ->
+    RichContent(html:, text:) ->
       json.preprocessed_array([
         make_content(text, "text/plain"),
         make_content(html, "text/html"),
@@ -52,28 +56,17 @@ pub fn dispatch_request(email: Email, api_key: String) -> Request(String) {
 
   let body =
     json.object([
-      #(
-        "personalizations",
-        json.preprocessed_array([json.object([#("to", receipients(email.to))])]),
-      ),
-      #(
-        "from",
-        json.object([
-          #("email", json.string(email.sender_email)),
-          #("name", json.string(email.sender_name)),
-        ]),
-      ),
-      #("subject", json.string(email.subject)),
+      #("personalizations", personalizations),
+      #("from", from),
+      #("subject", json.string(subject)),
       #("content", content),
     ])
-    |> json.to_string
 
-  let bearer = string.append("Bearer ", api_key)
   request.new()
-  |> request.set_body(body)
-  |> request.prepend_header("authorization", bearer)
-  |> request.prepend_header("content-type", "application/json")
   |> request.set_method(http.Post)
   |> request.set_host("api.sendgrid.com")
   |> request.set_path("/v3/mail/send")
+  |> request.set_body(json.to_string(body))
+  |> request.prepend_header("authorization", "Bearer " <> api_key)
+  |> request.prepend_header("content-type", "application/json")
 }
