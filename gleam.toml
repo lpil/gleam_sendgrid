@@ -4,8 +4,8 @@ licences = ["Apache-2.0"]
 description = "Send emails from Gleam with SendGrid"
 repository = { type = "github", user = "lpil", repo = "gleam_sendgrid" }
 links = [
-    { title = "Website", href = "https://gleam.run" },
-    { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
+  { title = "Website", href = "https://gleam.run" },
+  { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
 ]
 gleam = ">= 1.11.0"
 
