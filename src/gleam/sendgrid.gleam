@@ -25,6 +25,7 @@ pub type EmailContent {
 //   --header 'Content-Type: application/json' \
 //   --data '{"personalizations": [{"to": [{"email": "test@example.com"}]}],"from": {"email": "test@example.com"},"subject": "Sending with SendGrid is Fun","content": [{"type": "text/plain", "value": "and easy to do anywhere, even with cURL"}]}'
 pub fn dispatch_request(email: Email, api_key: String) -> Request(String) {
+pub fn mail_send_request(email: Email, api_key: String) -> Request(String) {
   let Email(to:, sender_name:, sender_email:, subject:, content:) = email
 
   let make_email = fn(email) { json.object([#("email", json.string(email))]) }

@@ -11,7 +11,7 @@ pub fn dispatch_request_text_content_test() {
       subject: "Hello, Joe!",
       content: sendgrid.TextContent("System still working?"),
     )
-    |> sendgrid.dispatch_request("some-api-key")
+    |> sendgrid.mail_send_request("some-api-key")
 
   assert http.Post == request.method
   assert http.Https == request.scheme
@@ -36,7 +36,7 @@ pub fn dispatch_request_rich_content_test() {
         text: "System still working?",
       ),
     )
-    |> sendgrid.dispatch_request("some-api-key")
+    |> sendgrid.mail_send_request("some-api-key")
 
   assert http.Post == request.method
   assert http.Https == request.scheme
