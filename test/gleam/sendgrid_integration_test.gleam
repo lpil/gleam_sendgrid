@@ -15,11 +15,11 @@ pub fn main() {
     )
 
   // Prepare an API request
-  let request = sendgrid.dispatch_request(email, api_key)
+  let request = sendgrid.mail_send_request(email, api_key)
 
   // Send it with a HTTP client of your choice
   let assert Ok(response) = hackney.send(request)
 
   // A status of 202 indicates that the email has been sent
-  let assert 202 = response.status
+  assert 202 == response.status
 }
