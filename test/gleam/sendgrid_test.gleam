@@ -1,6 +1,9 @@
 import gleam/http
 import gleam/http/request
+import gleam/http/response
+import gleam/option.{None, Some}
 import gleam/sendgrid
+import gleam/string
 
 pub fn dispatch_request_text_content_test() {
   let request =
@@ -47,4 +50,112 @@ pub fn dispatch_request_rich_content_test() {
     == request.get_header(request, "authorization")
   assert "{\"personalizations\":[{\"to\":[{\"email\":\"joe@example.com\"}]}],\"from\":{\"email\":\"mike@example.com\",\"name\":\"Mike\"},\"subject\":\"Hello, Joe!\",\"content\":[{\"type\":\"text/plain\",\"value\":\"System still working?\"},{\"type\":\"text/html\",\"value\":\"<p>System still working?</p>\"}]}"
     == request.body
+}
+
+pub fn error_with_missing_field_and_help_test() {
+  assert "{
+      'errors': [{'message': 'an error'}]
+    }"
+    |> string.replace(each: "'", with: "\"")
+    |> error_response
+    == sendgrid.SendGridError(id: None, errors: [
+      sendgrid.ErrorObject(message: "an error", field: None, help: None),
+    ])
+}
+
+pub fn error_with_string_null_field_test() {
+  assert "{
+      'errors': [{'message': 'an error', 'field': 'null'}]
+    }"
+    |> string.replace(each: "'", with: "\"")
+    |> error_response
+    == sendgrid.SendGridError(id: None, errors: [
+      sendgrid.ErrorObject(message: "an error", field: None, help: None),
+    ])
+}
+
+pub fn error_with_null_field_test() {
+  assert "{
+      'errors': [{'message': 'an error', 'field': null}]
+    }"
+    |> string.replace(each: "'", with: "\"")
+    |> error_response
+    == sendgrid.SendGridError(id: None, errors: [
+      sendgrid.ErrorObject(message: "an error", field: None, help: None),
+    ])
+}
+
+pub fn error_with_field_and_help_test() {
+  assert "{
+      'errors': [{
+        'message': 'an error',
+        'field': 'wibble',
+        'help': 'try this'
+      }]
+    }"
+    |> string.replace(each: "'", with: "\"")
+    |> error_response
+    == sendgrid.SendGridError(id: None, errors: [
+      sendgrid.ErrorObject(
+        message: "an error",
+        field: Some("wibble"),
+        help: Some("try this"),
+      ),
+    ])
+}
+
+pub fn error_with_multiple_errors_and_id_test() {
+  assert "{
+      'id': 'E001',
+      'errors': [
+        {
+          'message': 'first error',
+          'help': 'try this'
+        },
+        {
+          'message': 'second error',
+          'field': 'wibble'
+        }
+      ]
+    }"
+    |> string.replace(each: "'", with: "\"")
+    |> error_response
+    == sendgrid.SendGridError(id: Some("E001"), errors: [
+      sendgrid.ErrorObject(
+        message: "first error",
+        field: None,
+        help: Some("try this"),
+      ),
+      sendgrid.ErrorObject(
+        message: "second error",
+        field: Some("wibble"),
+        help: None,
+      ),
+    ])
+}
+
+pub fn error_with_unexpected_shape_test() {
+  let error =
+    "{'errors': [{ 'wobble': 1 }]}"
+    |> string.replace(each: "'", with: "\"")
+
+  let response =
+    response.new(400)
+    |> response.set_body(error)
+
+  assert sendgrid.mail_send_response(response)
+    == Error(sendgrid.UnexpectedResponseError(response))
+}
+
+pub fn successful_response_test() {
+  assert Ok(Nil) == response.new(200) |> sendgrid.mail_send_response
+}
+
+fn error_response(error: String) -> sendgrid.SendGridError {
+  let assert Error(error) =
+    response.new(400)
+    |> response.set_body(error)
+    |> sendgrid.mail_send_response
+
+  error
 }
