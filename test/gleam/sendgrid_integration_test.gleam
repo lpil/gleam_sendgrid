@@ -21,5 +21,5 @@ pub fn main() {
   let assert Ok(response) = hackney.send(request)
 
   // A status of 202 indicates that the email has been sent
-  let assert 202 = response.status
+  assert 202 == response.status
 }
