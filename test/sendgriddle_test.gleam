@@ -2,8 +2,14 @@ import gleam/http
 import gleam/http/request
 import gleam/http/response
 import gleam/option.{None, Some}
-import gleam/sendgrid
 import gleam/string
+import sendgriddle as sendgrid
+
+import gleeunit
+
+pub fn main() {
+  gleeunit.main()
+}
 
 pub fn dispatch_request_text_content_test() {
   let request =

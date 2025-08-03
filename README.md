@@ -1,7 +1,7 @@
-# Gleam SendGrid
+# sendgriddle
 
-[![Package Version](https://img.shields.io/hexpm/v/gleam_sendgrid)](https://hex.pm/packages/gleam_sendgrid)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/gleam_sendgrid/)
+[![Package Version](https://img.shields.io/hexpm/v/sendgriddle)](https://hex.pm/packages/sendgriddle)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/sendgriddle/)
 
 A client for SendGrid's API, enabling Gleam programs to send emails.
 
@@ -10,21 +10,21 @@ A client for SendGrid's API, enabling Gleam programs to send emails.
 Add this package to your Gleam project.
 
 ```sh
-gleam add gleam_sendgrid
+gleam add sendgriddle
 ```
 
 And then send some emails!
 
 ```gleam
-import gleam/sendgrid
-import gleam/hackney
+import sendgriddle
+import gleam/httpc
 
 pub fn main() {
   let api_key = "your SendGrid API key here"
 
   // Construct an email
   let email = 
-    sendgrid.Email(
+    sendgriddle.Email(
       to: ["joe@example.com"],
       sender_email: "mike@example.com",
       sender_name: "Mike",
@@ -33,12 +33,12 @@ pub fn main() {
     )
 
   // Prepare an API request
-  let request = sendgrid.dispatch_request(email, api_key)
+  let request = sendgriddle.mail_send_request(email, api_key)
 
   // Send it with a HTTP client of your choice
-  let assert Ok(response) = hackney.send(request)
+  let assert Ok(response) = httpc.send(request)
 
-  // A status of 202 indicates that the email has been sent
-  let assert 202 = response.status
+  // Check the mail send succeeded
+  assert sendgriddle.mail_send_response(response) == Ok(Nil)
 }
 ```
