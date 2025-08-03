@@ -106,6 +106,9 @@ pub fn mail_send_request(email: Email, api_key: String) -> Request(String) {
   |> request.prepend_header("content-type", "application/json")
 }
 
+/// Parse a response to a mail-send request, to determine whether or not it
+/// was successful.
+///
 pub fn mail_send_response(
   response: Response(String),
 ) -> Result(Nil, SendGridError) {
