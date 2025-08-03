@@ -3,18 +3,13 @@
 [![Package Version](https://img.shields.io/hexpm/v/sendgriddle)](https://hex.pm/packages/sendgriddle)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/sendgriddle/)
 
-A client for SendGrid's API, enabling Gleam programs to send emails.
+Send emails from Gleam with SendGrid.
 
 ## Usage
-
-Add this package to your Gleam project.
 
 ```sh
 gleam add sendgriddle
 ```
-
-And then send some emails!
-
 ```gleam
 import sendgriddle
 import gleam/httpc
